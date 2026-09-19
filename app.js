@@ -65,9 +65,9 @@ function updateEmptyState(visibleTodos) {
   if (todos.length === 0) {
     emptyState.textContent = "還沒有任何待辦事項,新增一個吧!";
   } else if (currentFilter === "active") {
-    emptyState.textContent = "目前沒有未完成的待辦事項。";
+    emptyState.textContent = "目前沒有未完成的待辦事項,其他項目可能已被目前的篩選條件過濾。";
   } else if (currentFilter === "completed") {
-    emptyState.textContent = "目前沒有已完成的待辦事項。";
+    emptyState.textContent = "目前沒有已完成的待辦事項,其他項目可能已被目前的篩選條件過濾。";
   }
 
   emptyState.hidden = visibleTodos.length > 0;
