@@ -1,4 +1,6 @@
 const STORAGE_KEY = "todo-list-items";
+const FILTER_STORAGE_KEY = "todo-filter";
+const VALID_FILTERS = ["all", "active", "completed"];
 
 const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
@@ -12,7 +14,7 @@ const themeLabel = themeToggle.querySelector(".theme-label");
 const filterButtons = document.querySelectorAll("[data-filter]");
 
 let todos = loadTodos();
-let currentFilter = "all";
+let currentFilter = loadFilter();
 const themeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
 // 從 localStorage 讀取待辦資料，若資料損壞則回傳空清單。
@@ -28,6 +30,21 @@ function loadTodos() {
 // 將目前清單保存到瀏覽器的 localStorage。
 function saveTodos() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+}
+
+// 讀取篩選條件，無效值一律回退為全部。
+function loadFilter() {
+  const savedFilter = localStorage.getItem(FILTER_STORAGE_KEY);
+  return VALID_FILTERS.includes(savedFilter) ? savedFilter : "all";
+}
+
+// 更新篩選按鈕的選中狀態。
+function updateFilterButtons() {
+  filterButtons.forEach((filterButton) => {
+    const isActive = filterButton.dataset.filter === currentFilter;
+    filterButton.classList.toggle("is-active", isActive);
+    filterButton.setAttribute("aria-pressed", String(isActive));
+  });
 }
 
 // 依照目前篩選條件取得要顯示的待辦事項。
@@ -129,11 +146,8 @@ themeMediaQuery.addEventListener("change", () => {
 filterButtons.forEach((button) => {
   button.addEventListener("click", () => {
     currentFilter = button.dataset.filter;
-    filterButtons.forEach((filterButton) => {
-      const isActive = filterButton === button;
-      filterButton.classList.toggle("is-active", isActive);
-      filterButton.setAttribute("aria-pressed", String(isActive));
-    });
+    localStorage.setItem(FILTER_STORAGE_KEY, currentFilter);
+    updateFilterButtons();
     renderTodos();
   });
 });
@@ -189,4 +203,5 @@ clearCompletedButton.addEventListener("click", () => {
 });
 
 applySystemTheme();
+updateFilterButtons();
 renderTodos();
