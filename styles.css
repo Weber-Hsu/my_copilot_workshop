@@ -270,6 +270,13 @@ button {
   text-decoration: underline;
 }
 
+.clear-button:disabled {
+  color: var(--color-muted);
+  cursor: not-allowed;
+  opacity: 0.55;
+  text-decoration: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
