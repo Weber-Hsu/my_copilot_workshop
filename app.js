@@ -73,6 +73,11 @@ function updateEmptyState(visibleTodos) {
   emptyState.hidden = visibleTodos.length > 0;
 }
 
+// 根據是否有已完成項目同步更新批次清除按鈕。
+function updateClearCompletedButton() {
+  clearCompletedButton.disabled = !todos.some((todo) => todo.completed);
+}
+
 // 重新繪製篩選後的清單與整體未完成數量。
 function renderTodos() {
   todoList.replaceChildren();
@@ -106,6 +111,7 @@ function renderTodos() {
 
   const unfinishedTodos = todos.filter((todo) => !todo.completed).length;
   remainingCount.textContent = `未完成:${unfinishedTodos} 項`;
+  updateClearCompletedButton();
 }
 
 // 套用主題並同步切換按鈕文字。
@@ -197,6 +203,10 @@ todoList.addEventListener("click", (event) => {
 });
 
 clearCompletedButton.addEventListener("click", () => {
+  if (!confirm("確定要清除所有已完成的待辦事項嗎?")) {
+    return;
+  }
+
   todos = todos.filter((todo) => !todo.completed);
   saveTodos();
   renderTodos();
